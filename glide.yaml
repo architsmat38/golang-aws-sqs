@@ -1,0 +1,8 @@
+package: github.com/architsmat38/golang-aws-sqs
+import:
+- package: github.com/aws/aws-sdk-go
+  subpackages:
+  - aws
+  - aws/credentials
+  - aws/session
+  - service/sqs
