@@ -5,6 +5,8 @@
 AWS SQS Helper - Provides functionality to send, receive, delete, purge messages.
 It also helps in processing messages and send them in batches to SQS.
 
+There is a SQS queue [poller](https://github.com/architsmat38/golang-aws-sqs/blob/master/poller/main.go) as well which receives messages in batches from SQS queue and provides functionality to handle each message individually.
+
 Refer to [example/main.go](https://github.com/architsmat38/golang-aws-sqs/blob/master/example/main.go), in order to get a better understanding of the usage of this helper.
 
 ### AWS SQS Config
