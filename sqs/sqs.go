@@ -14,7 +14,9 @@ type SQSMessageBatchOutput struct {
 }
 
 // Max batch size of messages that can be sent to SQS
-var MAX_SQS_BATCH_SIZE_KB = 256
+// This is excluding the metadata that is sent along with the message
+var MAX_SQS_BATCH_SIZE_KB = 150
+var MAX_BATCH_MESSAGE_COUNT = 10
 
 
 /**
@@ -95,6 +97,7 @@ func ProcessAndSendBatch(messages []string) []*SQSMessageBatchOutput {
         wg                  sync.WaitGroup
         chunkMessages       []string
         chunkSize           int = 0
+        countMessage        int = 0
         output              []*SQSMessageBatchOutput
     )
 
@@ -112,15 +115,17 @@ func ProcessAndSendBatch(messages []string) []*SQSMessageBatchOutput {
         messageBytes := []byte(message)
 
         var messageLength int = len(messageBytes)
-        if (chunkSize + messageLength) / 1000 < MAX_SQS_BATCH_SIZE_KB {
+        if (chunkSize + messageLength) / 1000 < MAX_SQS_BATCH_SIZE_KB && countMessage < MAX_BATCH_MESSAGE_COUNT {
             // Creates message batch
             chunkSize = chunkSize + messageLength
+            countMessage++
 
         } else {
             // Send batch
             wg.Add(1)
-            chunkSize = messageLength
             go send(chunkMessages)
+            chunkSize = messageLength
+            countMessage = 1
             chunkMessages = nil
         }
 
